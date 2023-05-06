@@ -1,0 +1,32 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: development
+  namespace: argocd
+spec:
+  sourceRepos:
+  - http://192.168.56.110:8181/root/pllucian-IoT.git
+  destinations:
+  - namespace: dev
+    server: https://kubernetes.default.svc
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pllucian-playground
+  namespace: argocd
+spec:
+  project: development
+  source:
+    repoURL: http://192.168.56.110:8181/root/pllucian-IoT.git
+    targetRevision: HEAD
+    path: manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
